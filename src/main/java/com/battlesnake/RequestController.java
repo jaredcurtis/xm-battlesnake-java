@@ -34,10 +34,10 @@ public class RequestController {
     return new StartResponse()
       .setName("Stargazer Snake")
       .setColor("#FF0000")
-      .setHeadUrl("http://vignette1.wikia.nocookie.net/nintendo/images/6/61/Bowser_Icon.png/revision/latest?cb=20120820000805&path-prefix=en")
+      .setHeadUrl("http://athenacinema.com/wp-content/uploads/2015/10/Snakes_on_a_Plane.jpg")
       .setHeadType(HeadType.DEAD)
       .setTailType(TailType.PIXEL)
-      .setTaunt("Roarrrrrrrrr!");
+      .setTaunt("I have had it with these motherf...ing snake on this motherf...ing plane!!!");
   }
 
   @RequestMapping(value="/move", method=RequestMethod.POST, produces = "application/json")
