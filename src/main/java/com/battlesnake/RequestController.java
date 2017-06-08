@@ -37,7 +37,7 @@ public class RequestController {
       .setHeadUrl("http://athenacinema.com/wp-content/uploads/2015/10/Snakes_on_a_Plane.jpg")
       .setHeadType(HeadType.DEAD)
       .setTailType(TailType.PIXEL)
-      .setTaunt("I have had it with these motherf...ing snake on this motherf...ing plane!!!");
+      .setTaunt("I have had it with these motherf...ing snakes on this motherf...ing plane!!!");
   }
 
   @RequestMapping(value="/move", method=RequestMethod.POST, produces = "application/json")
@@ -48,7 +48,7 @@ public class RequestController {
 
     return new MoveResponse()
       .setMove(filterByDistance(request, moves))
-      .setTaunt("GRRR!!");
+      .setTaunt("I have had it with these motherf...ing snakes on this motherf...ing plane!!!");
   }
     
   @RequestMapping(value="/end", method=RequestMethod.POST)
