@@ -80,7 +80,6 @@ public class RequestController {
 
     int[][] head = new int[mySnake.getCoords()[0][0]][mySnake.getCoords()[0][1]];
 
-    int maxMove = -1;
     int currUp = 0;
     int currDown = 0;
     int currLeft = 0;
@@ -151,13 +150,13 @@ public class RequestController {
     int[][] coords = mySnake.getCoords();
 
     if (coords[0][0] == 0) {
-      results.remove(Move.UP);
+      results.remove(Move.LEFT);
     }
     if (coords[0][0] == moveRequest.getWidth()-1) {
       results.remove(Move.RIGHT);
     }
     if (coords[0][1] == 0) {
-      results.remove(Move.LEFT);
+      results.remove(Move.UP);
     }
     if (coords[0][1] == moveRequest.getHeight() - 1) {
       results.remove(Move.DOWN);
@@ -168,6 +167,7 @@ public class RequestController {
 
 
   public Snake getMySnake(String you, ArrayList<Snake> snakes) {
+
     for (Snake s : snakes) {
       if (s.getId().equals(you)) {
         return s;
