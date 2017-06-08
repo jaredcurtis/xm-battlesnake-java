@@ -78,7 +78,7 @@ public class RequestController {
       empty[seg[0]][seg[1]] = false;
     }
 
-    int[][] head = new int[mySnake.getCoords()[0][0]][mySnake.getCoords()[0][1]];
+//    int[][] head = new int[mySnake.getCoords()[0][0]][mySnake.getCoords()[0][1]];
 
     int currUp = 0;
     int currDown = 0;
@@ -86,30 +86,9 @@ public class RequestController {
     int currRight = 0;
 
     for (Move direction : moves ) {
-      if (direction.equals(Move.UP)) {
+      if (direction.equals(Move.LEFT)) {
         for (int i = mySnake.getCoords()[0][0] ; i >= 0 ; i-- ) {
           if (empty[i][mySnake.getCoords()[0][1]]) {
-            currUp++;
-          } else {
-            break;
-          }
-        }
-      }
-
-      if (direction.equals(Move.DOWN)) {
-        for (int i = mySnake.getCoords()[0][0] ; i < moveRequest.getHeight() ; i++ ) {
-          if (empty[i][mySnake.getCoords()[0][1]]) {
-            currDown++;
-          } else {
-            break;
-          }
-        }
-      }
-
-
-      if (direction.equals(Move.LEFT)) {
-        for (int j = mySnake.getCoords()[0][1] ; j >= 0 ; j-- ) {
-          if (empty[mySnake.getCoords()[0][0]][j]) {
             currLeft++;
           } else {
             break;
@@ -117,11 +96,32 @@ public class RequestController {
         }
       }
 
-
       if (direction.equals(Move.RIGHT)) {
+        for (int i = mySnake.getCoords()[0][0] ; i < moveRequest.getHeight() ; i++ ) {
+          if (empty[i][mySnake.getCoords()[0][1]]) {
+            currRight++;
+          } else {
+            break;
+          }
+        }
+      }
+
+
+      if (direction.equals(Move.UP)) {
+        for (int j = mySnake.getCoords()[0][1] ; j >= 0 ; j-- ) {
+          if (empty[mySnake.getCoords()[0][0]][j]) {
+            currUp++;
+          } else {
+            break;
+          }
+        }
+      }
+
+
+      if (direction.equals(Move.DOWN)) {
         for (int j = mySnake.getCoords()[0][1] ; j < moveRequest.getWidth() ; j++ ) {
           if (empty[mySnake.getCoords()[0][0]][j]) {
-            currRight++;
+            currDown++;
           } else {
             break;
           }
@@ -162,6 +162,7 @@ public class RequestController {
       results.remove(Move.DOWN);
     }
 
+    System.out.println("results: " + results);
     return results;
   }
 
