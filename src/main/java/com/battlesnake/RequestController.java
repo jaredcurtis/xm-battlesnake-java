@@ -32,7 +32,7 @@ public class RequestController {
   @RequestMapping(value="/start", method=RequestMethod.POST, produces="application/json")
   public StartResponse start(@RequestBody StartRequest request) {
     return new StartResponse()
-      .setName("Bowser Snake")
+      .setName("Stargazer Snake")
       .setColor("#FF0000")
       .setHeadUrl("http://vignette1.wikia.nocookie.net/nintendo/images/6/61/Bowser_Icon.png/revision/latest?cb=20120820000805&path-prefix=en")
       .setHeadType(HeadType.DEAD)
@@ -42,9 +42,13 @@ public class RequestController {
 
   @RequestMapping(value="/move", method=RequestMethod.POST, produces = "application/json")
   public MoveResponse move(@RequestBody MoveRequest request) {
+
+    List<Move> moves = getPossibleMoves(request);
+//    moves = filterByDistance(request, moves);
+
     return new MoveResponse()
-      .setMove(Move.DOWN)
-      .setTaunt("Going Down!");
+      .setMove(filterByDistance(request, moves))
+      .setTaunt("GRRR!!");
   }
     
   @RequestMapping(value="/end", method=RequestMethod.POST)
@@ -54,4 +58,129 @@ public class RequestController {
       return responseObject;
   }
 
+  public Move filterByDistance(MoveRequest moveRequest, List<Move> moves) {
+    boolean[][] empty = new boolean[moveRequest.getWidth()][moveRequest.getHeight()];
+    //Move resultDirection = moves.get(0);
+
+    for (int i = 0 ; i < moveRequest.getHeight() ; i++) {
+      for (int j = 0 ; j < moveRequest.getWidth() ; j++ ) {
+        empty[i][j] = true;
+      }
+    }
+
+    Snake mySnake = getMySnake(moveRequest.getYou(), moveRequest.getSnakes());
+    Snake otherSnake = getOtherSnake(moveRequest.getYou(), moveRequest.getSnakes());
+
+    for (int seg[] : mySnake.getCoords()) {
+      empty[seg[0]][seg[1]] = false;
+    }
+    for (int seg[] : otherSnake.getCoords()) {
+      empty[seg[0]][seg[1]] = false;
+    }
+
+    int[][] head = new int[mySnake.getCoords()[0][0]][mySnake.getCoords()[0][1]];
+
+    int maxMove = -1;
+    int currUp = 0;
+    int currDown = 0;
+    int currLeft = 0;
+    int currRight = 0;
+
+    for (Move direction : moves ) {
+      if (direction.equals(Move.UP)) {
+        for (int i = mySnake.getCoords()[0][0] ; i >= 0 ; i-- ) {
+          if (empty[i][mySnake.getCoords()[0][1]]) {
+            currUp++;
+          } else {
+            break;
+          }
+        }
+      }
+
+      if (direction.equals(Move.DOWN)) {
+        for (int i = mySnake.getCoords()[0][0] ; i < moveRequest.getHeight() ; i++ ) {
+          if (empty[i][mySnake.getCoords()[0][1]]) {
+            currDown++;
+          } else {
+            break;
+          }
+        }
+      }
+
+
+      if (direction.equals(Move.LEFT)) {
+        for (int j = mySnake.getCoords()[0][1] ; j >= 0 ; j-- ) {
+          if (empty[mySnake.getCoords()[0][0]][j]) {
+            currLeft++;
+          } else {
+            break;
+          }
+        }
+      }
+
+
+      if (direction.equals(Move.RIGHT)) {
+        for (int j = mySnake.getCoords()[0][1] ; j < moveRequest.getWidth() ; j++ ) {
+          if (empty[mySnake.getCoords()[0][0]][j]) {
+            currRight++;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+
+    int max = Math.max(currUp, Math.max(currDown, Math.max(currLeft, currRight)));
+
+    if (max == currUp) {
+      return Move.UP;
+    } else if (max == currDown) {
+      return Move.DOWN;
+    } else if (max == currLeft) {
+      return Move.LEFT;
+    } else {
+      return Move.RIGHT;
+    }
+  }
+
+
+  public List<Move> getPossibleMoves(MoveRequest moveRequest) {
+    List<Move> results = Arrays.asList(Move.UP, Move.DOWN, Move.LEFT, Move.RIGHT);
+    Snake mySnake = getMySnake(moveRequest.getYou(), moveRequest.getSnakes());
+
+    int[][] coords = mySnake.getCoords();
+
+    if (coords[0][0] == 0) {
+      results.remove(Move.UP);
+    }
+    if (coords[0][0] == moveRequest.getWidth()-1) {
+      results.remove(Move.RIGHT);
+    }
+    if (coords[0][1] == 0) {
+      results.remove(Move.LEFT);
+    }
+    if (coords[0][1] == moveRequest.getHeight() - 1) {
+      results.remove(Move.DOWN);
+    }
+
+    return results;
+  }
+
+
+  public Snake getMySnake(String you, ArrayList<Snake> snakes) {
+    for (Snake s : snakes) {
+      if (s.getId().equals(you)) {
+        return s;
+      }
+    }
+    return null;
+  }
+  public Snake getOtherSnake(String you, ArrayList<Snake> snakes) {
+    for (Snake s : snakes) {
+      if (!s.getId().equals(you)) {
+        return s;
+      }
+    }
+    return null;
+  }
 }
